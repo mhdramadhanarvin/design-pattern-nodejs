@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */ 
 
 class ThreadRepository {
-  async addThread(newThread) {
+  async addThread(AddThread) {
     throw new Error("THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED")
   }
 }
