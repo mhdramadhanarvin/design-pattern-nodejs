@@ -6,13 +6,13 @@ exports.up = (pgm) => {
       type: "VARCHAR(50)",
       primaryKey: true,
     },
-    body: {
-      type: "VARCHAR(100)",
-      notNull: true, 
-    },
     title: {
       type: "TEXT",
       notNull: true,
+    },
+    body: {
+      type: "VARCHAR(100)",
+      notNull: true, 
     },
     owner: {
       type: "VARCHAR(50)",
