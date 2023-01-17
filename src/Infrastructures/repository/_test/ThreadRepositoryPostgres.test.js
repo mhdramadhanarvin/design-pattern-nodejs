@@ -17,17 +17,18 @@ describe("ThreadRepositoryPostgres", () => {
 
   describe("addThread function", () => {
     it("should persist add thread and return thread correctly", async () => {
+      await UsersTableTestHelper.addUser({ id: "user-123456", username: "user123456" })
+
       // Arrange
       const addThread = new AddThread({
         title: "dicoding",
         body: "Dicoding Indonesia",
-        owner: "user-123"
+        owner: "user-123456"
       })
       const fakeIdGenerator = () => "123"
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator)
 
-      // // Action
-      await UsersTableTestHelper.addUser({ id: "user-123" })
+      // Action 
       await threadRepositoryPostgres.addThread(addThread)
 
       // // Assert
@@ -40,20 +41,20 @@ describe("ThreadRepositoryPostgres", () => {
       const addThread = new AddThread({
         title: "dicoding",
         body: "Dicoding Indonesia",
-        owner: "user-123"
+        owner: "user-123456"
       })
       const fakeIdGenerator = () => "123" // stub!
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator)
 
       // Action
-      await UsersTableTestHelper.addUser({ id: "user-123" })
+      await UsersTableTestHelper.addUser({ id: "user-123456" })
       const addedThread = await threadRepositoryPostgres.addThread(addThread)
 
       // Assert
       expect(addedThread).toStrictEqual(new AddedThread({ 
         id: "thread-123",
         title: "dicoding",
-        owner: "user-123"
+        owner: "user-123456"
       }))
     })
   })
