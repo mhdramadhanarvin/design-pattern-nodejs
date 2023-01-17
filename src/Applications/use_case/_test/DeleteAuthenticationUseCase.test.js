@@ -1,8 +1,8 @@
-const AuthenticationRepository = require('../../../Domains/authentications/AuthenticationRepository')
-const DeleteAuthenticationUseCase = require('../DeleteAuthenticationUseCase')
+const AuthenticationRepository = require("../../../Domains/authentications/AuthenticationRepository")
+const DeleteAuthenticationUseCase = require("../DeleteAuthenticationUseCase")
 
-describe('DeleteAuthenticationUseCase', () => {
-  it('should throw error if use case payload not contain refresh token', async () => {
+describe("DeleteAuthenticationUseCase", () => {
+  it("should throw error if use case payload not contain refresh token", async () => {
     // Arrange
     const useCasePayload = {}
     const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({})
@@ -10,10 +10,10 @@ describe('DeleteAuthenticationUseCase', () => {
     // Action & Assert
     await expect(deleteAuthenticationUseCase.execute(useCasePayload))
       .rejects
-      .toThrowError('DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN')
+      .toThrowError("DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN")
   })
 
-  it('should throw error if refresh token not string', async () => {
+  it("should throw error if refresh token not string", async () => {
     // Arrange
     const useCasePayload = {
       refreshToken: 123,
@@ -23,13 +23,13 @@ describe('DeleteAuthenticationUseCase', () => {
     // Action & Assert
     await expect(deleteAuthenticationUseCase.execute(useCasePayload))
       .rejects
-      .toThrowError('DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION')
+      .toThrowError("DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION")
   })
 
-  it('should orchestrating the delete authentication action correctly', async () => {
+  it("should orchestrating the delete authentication action correctly", async () => {
     // Arrange
     const useCasePayload = {
-      refreshToken: 'refreshToken',
+      refreshToken: "refreshToken",
     }
     const mockAuthenticationRepository = new AuthenticationRepository()
     mockAuthenticationRepository.checkAvailabilityToken = jest.fn()
