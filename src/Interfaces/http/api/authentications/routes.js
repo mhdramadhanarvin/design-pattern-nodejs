@@ -14,6 +14,6 @@ const routes = (handler) => ([
     path: '/authentications',
     handler: handler.deleteAuthenticationHandler,
   },
-]);
+])
 
-module.exports = routes;
+module.exports = routes

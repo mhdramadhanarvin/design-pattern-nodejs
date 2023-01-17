@@ -6,9 +6,9 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
-  });
-};
+  })
+}
 
 exports.down = (pgm) => {
-  pgm.dropTable('authentications');
-};
+  pgm.dropTable('authentications')
+}

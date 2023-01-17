@@ -4,6 +4,6 @@ const routes = (handler) => ([
     path: '/users',
     handler: handler.postUserHandler,
   },
-]);
+])
 
-module.exports = routes;
+module.exports = routes
