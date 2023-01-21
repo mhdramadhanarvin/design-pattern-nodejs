@@ -2,7 +2,7 @@ const AddComment = require("../../../Domains/comments/entities/AddComment")
 const AddedComment = require("../../../Domains/comments/entities/AddedComment")
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository")
 const CommentRepository = require("../../../Domains/comments/CommentRepository")
-const AddCommentUseCase = require("../AddCommentUseCase.js")
+const AddCommentUseCase = require("../AddCommentUseCase")
 
 describe("AddCommentUseCase", () => {
   /**
