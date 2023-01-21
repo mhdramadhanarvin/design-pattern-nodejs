@@ -6,24 +6,26 @@ const pool = require("../../database/postgres/pool")
 const ThreadRepositoryPostgres = require("../ThreadRepositoryPostgres")
 
 describe("ThreadRepositoryPostgres", () => {
+  beforeEach(async () => {
+    await UsersTableTestHelper.addUser({ id: "user-abc123456" })
+  })
+
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTable()
     await UsersTableTestHelper.cleanTable()
   })
-
+  
   afterAll(async () => {
     await pool.end()
   })
 
   describe("addThread function", () => {
     it("should persist add thread and return thread correctly", async () => {
-      await UsersTableTestHelper.addUser({ id: "user-123456", username: "user123456" })
-
       // Arrange
       const addThread = new AddThread({
         title: "dicoding",
         body: "Dicoding Indonesia",
-        owner: "user-123456"
+        owner: "user-abc123456"
       })
       const fakeIdGenerator = () => "123"
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator)
@@ -41,20 +43,19 @@ describe("ThreadRepositoryPostgres", () => {
       const addThread = new AddThread({
         title: "dicoding",
         body: "Dicoding Indonesia",
-        owner: "user-123456"
+        owner: "user-abc123456"
       })
       const fakeIdGenerator = () => "123" // stub!
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator)
 
-      // Action
-      await UsersTableTestHelper.addUser({ id: "user-123456" })
+      // Action 
       const addedThread = await threadRepositoryPostgres.addThread(addThread)
 
       // Assert
       expect(addedThread).toStrictEqual(new AddedThread({ 
         id: "thread-123",
         title: "dicoding",
-        owner: "user-123456"
+        owner: "user-abc123456"
       }))
     })
   })
