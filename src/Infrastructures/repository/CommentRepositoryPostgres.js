@@ -1,5 +1,6 @@
 const ThreadRepository = require("../../Domains/threads/ThreadRepository")
 const AddedComment = require("../../Domains/comments/entities/AddedComment")
+const AuthorizationError = require("../../Commons/exceptions/AuthorizationError")
 
 class CommentRepositoryPostgres extends ThreadRepository {
   constructor(pool, idGenerator) {
@@ -31,6 +32,19 @@ class CommentRepositoryPostgres extends ThreadRepository {
     }
 
     await this._pool.query(query) 
+  }
+
+  async verifyOwner(commentId, owner) {
+    const query = {
+      text: "SELECT * FROM comments WHERE id = $1 AND owner = $2",
+      values: [commentId, owner]
+    }
+
+    const { rowCount } = await this._pool.query(query)
+    
+    if (!rowCount) {
+      throw new AuthorizationError("bukan pemilik komentar")
+    }
   }
 }
 
