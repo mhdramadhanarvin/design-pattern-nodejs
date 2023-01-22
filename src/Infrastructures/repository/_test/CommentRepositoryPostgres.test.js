@@ -44,4 +44,21 @@ describe("CommentRepositoryPostgres", () => {
       expect(comment).toHaveLength(1) 
     }) 
   }) 
+  describe("deleteComment function", () => {
+    it("should correctly delete comment", async () => {  
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
+
+      await CommentsTableTestHelper.addComment({
+        id: "comment-12345", 
+        thread: "thread-123",
+        owner: "user-12345",
+      })
+      const commentBeforeDelete = await CommentsTableTestHelper.findCommentsById("comment-12345") 
+      await commentRepositoryPostgres.deleteComment("comment-12345")
+
+      const commentAfterDelete = await CommentsTableTestHelper.findCommentsById("comment-12345") 
+      expect(commentBeforeDelete).toHaveLength(1)
+      expect(commentAfterDelete).toEqual([])
+    })
+  }) 
 })

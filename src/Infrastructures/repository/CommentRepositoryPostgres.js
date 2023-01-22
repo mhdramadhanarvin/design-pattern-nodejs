@@ -21,6 +21,17 @@ class CommentRepositoryPostgres extends ThreadRepository {
 
     return new AddedComment({ ...result.rows[0] })
   }
+
+  async deleteComment(commentId) {
+    const deleted_at = new Date().toISOString()
+    
+    const query = {
+      text: "UPDATE comments SET deleted_at = $1 WHERE id = $2",
+      values: [deleted_at, commentId]
+    }
+
+    await this._pool.query(query) 
+  }
 }
 
 module.exports = CommentRepositoryPostgres

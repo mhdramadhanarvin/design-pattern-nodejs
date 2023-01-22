@@ -72,7 +72,7 @@ describe("ThreadRepositoryPostgres", () => {
   })
 
   describe("checkThreadExist function", () => {
-    it("should throw NotFoundError if thread not available", async () => {
+    it("should throw NotFoundError if thread not exist", async () => {
       // Arrange
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
       const threadId = "thread-123456"
@@ -83,7 +83,7 @@ describe("ThreadRepositoryPostgres", () => {
       ).rejects.toThrow(NotFoundError)
     })
 
-    it("should not throw NotFoundError if thread available", async () => {
+    it("should not throw NotFoundError if thread exist", async () => {
       // Arrange
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
       await ThreadsTableTestHelper.addThread({
