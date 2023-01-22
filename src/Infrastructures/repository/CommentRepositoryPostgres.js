@@ -1,6 +1,7 @@
 const ThreadRepository = require("../../Domains/threads/ThreadRepository")
 const AddedComment = require("../../Domains/comments/entities/AddedComment")
 const AuthorizationError = require("../../Commons/exceptions/AuthorizationError")
+const NotFoundError = require("../../Commons/exceptions/NotFoundError")
 
 class CommentRepositoryPostgres extends ThreadRepository {
   constructor(pool, idGenerator) {
@@ -44,6 +45,19 @@ class CommentRepositoryPostgres extends ThreadRepository {
     
     if (!rowCount) {
       throw new AuthorizationError("bukan pemilik komentar")
+    }
+  }
+
+  async checkCommentExist(commentId) {
+    const query = {
+      text: "SELECT id FROM comments WHERE id = $1",
+      values: [commentId]
+    }
+
+    const { rowCount } = await this._pool.query(query)
+    
+    if (!rowCount) {
+      throw new NotFoundError("komentar tidak ditemukan")
     }
   }
 }

@@ -6,6 +6,7 @@ const AddedComment = require("../../../Domains/comments/entities/AddedComment")
 const AddComment = require("../../../Domains/comments/entities/AddComment")
 const CommentRepositoryPostgres = require("../CommentRepositoryPostgres")
 const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError")
+const NotFoundError = require("../../../Commons/exceptions/NotFoundError")
 
 describe("CommentRepositoryPostgres", () => {
   beforeEach(async () => {
@@ -106,7 +107,31 @@ describe("CommentRepositoryPostgres", () => {
           "comment-12345",
           "user-abcde"
         )
-      ).rejects.toThrow(AuthorizationError);
+      ).rejects.toThrow(AuthorizationError)
+    })
+  })
+  describe("checkCommentExist function", () => {
+    it("should not throw NotFoundError when comment is exist", async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
+
+      await CommentsTableTestHelper.addComment({
+        id: "comment-12345",
+        thread: "thread-123",
+        owner: "user-12345",
+      })
+
+      await expect(
+        commentRepositoryPostgres.checkCommentExist("comment-12345")
+      ).resolves.not.toThrow(NotFoundError)
+    })
+    it("should throw NotFoundError when comment doesn't exist", async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
+      
+      await expect(() =>
+        commentRepositoryPostgres.checkCommentExist(
+          "comment-12345"
+        )
+      ).rejects.toThrow(NotFoundError)
     })
   })
 })
