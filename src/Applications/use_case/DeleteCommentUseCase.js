@@ -1,4 +1,4 @@
-class AddCommentUseCase {
+class DeleteCommentUseCase {
   constructor({ commentRepository }) {
     this._commentRepository = commentRepository 
   }
@@ -12,4 +12,4 @@ class AddCommentUseCase {
   }
 }
 
-module.exports = AddCommentUseCase
+module.exports = DeleteCommentUseCase
