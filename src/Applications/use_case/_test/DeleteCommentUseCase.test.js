@@ -8,8 +8,7 @@ describe("DeleteCommentUseCase", () => {
   it("should orchestrating the delete thread action correctly", async () => {
     // Arrange
     const useCasePayload = {
-      id: "comment-123",
-      thread: "thread-123",
+      commentId: "comment-123", 
       owner: "user-123",
     }
 
@@ -27,9 +26,9 @@ describe("DeleteCommentUseCase", () => {
     await deleteCommentUseCase.execute(useCasePayload)
 
     // Assert
-    expect(mockCommentRepository.checkCommentExist).toBeCalledWith(useCasePayload.id)
-    expect(mockCommentRepository.verifyOwner).toBeCalledWith(useCasePayload.id, useCasePayload.owner)
-    expect(mockCommentRepository.verifyOwner).toBeCalledWith(useCasePayload.id, useCasePayload.owner)
-    expect(mockCommentRepository.deleteComment).toBeCalledWith(useCasePayload.id)
+    expect(mockCommentRepository.checkCommentExist).toBeCalledWith(useCasePayload.commentId)
+    expect(mockCommentRepository.verifyOwner).toBeCalledWith(useCasePayload.commentId, useCasePayload.owner)
+    expect(mockCommentRepository.verifyOwner).toBeCalledWith(useCasePayload.commentId, useCasePayload.owner)
+    expect(mockCommentRepository.deleteComment).toBeCalledWith(useCasePayload.commentId)
   })
 })
