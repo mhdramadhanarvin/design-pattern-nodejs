@@ -16,6 +16,11 @@ exports.up = (pgm) => {
       type: "VARCHAR(50)",
       notNull: true,
     },
+    created_at: {
+      type: "TIMESTAMP",
+      notNull: true,
+      default: pgm.func("current_timestamp"),
+    },
     deleted_at: {
       type: "TIMESTAMP", 
       defaultValue: null,
