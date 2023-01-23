@@ -50,7 +50,7 @@ class CommentRepositoryPostgres extends ThreadRepository {
 
   async checkCommentExist(commentId) {
     const query = {
-      text: "SELECT id FROM comments WHERE id = $1",
+      text: "SELECT * FROM comments WHERE id = $1",
       values: [commentId]
     }
 
