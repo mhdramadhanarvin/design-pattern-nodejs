@@ -16,11 +16,11 @@ const CommentsTableTestHelper = {
 
   async findCommentsById(id) {
     const query = {
-      text: "SELECT * FROM comments WHERE id = $1",
+      text: "SELECT * FROM comments WHERE id = $1 AND deleted_at IS NULL",
       values: [id]
     }
 
-    const { rows } = await pool.query(query)
+    const { rows } = await pool.query(query) 
     return rows
   },
 
