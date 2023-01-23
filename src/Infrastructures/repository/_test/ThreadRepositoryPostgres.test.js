@@ -8,7 +8,7 @@ const NotFoundError = require("../../../Commons/exceptions/NotFoundError")
 
 describe("ThreadRepositoryPostgres", () => {
   beforeEach(async () => {
-    await UsersTableTestHelper.addUser({ id: "user-abc123456" })
+    await UsersTableTestHelper.addUser({ id: "user-abc123456", username: "username" })
   })
 
   afterEach(async () => {
@@ -97,5 +97,26 @@ describe("ThreadRepositoryPostgres", () => {
         threadRepositoryPostgres.checkThreadExist("thread-123456")
       ).resolves.not.toThrow(NotFoundError)
     })
+  })
+
+  describe("detailThread function", () => {
+    it("should return correctly", async () => {
+      // Arrange
+      const payload = {
+        id: "thread-12345",
+        title: "sebuah judul thread",
+        body: "sebuah thread",
+        owner: "user-abc123456",
+      }
+      await ThreadsTableTestHelper.addThread(payload)
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+
+      const detailThread = await threadRepositoryPostgres.detailThread(payload.id)
+
+      expect(detailThread.id).toEqual(payload.id)
+      expect(detailThread.title).toEqual(payload.title)
+      expect(detailThread.body).toEqual(payload.body)
+      expect(detailThread.username).toEqual("username")
+    }) 
   })
 })

@@ -29,7 +29,7 @@ describe("CommentRepositoryPostgres", () => {
   })
 
   describe("addComment function", () => {
-    it("should persist add comment and return thread correctly", async () => {
+    it("should persist add comment and return comment correctly", async () => {
       const newComment = new AddComment({
         content: "sebuah komentar",
         thread: "thread-123",
