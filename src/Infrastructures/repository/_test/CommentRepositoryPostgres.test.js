@@ -10,7 +10,7 @@ const NotFoundError = require("../../../Commons/exceptions/NotFoundError")
 
 describe("CommentRepositoryPostgres", () => {
   beforeEach(async () => {
-    await UsersTableTestHelper.addUser({ id: "user-12345" })
+    await UsersTableTestHelper.addUser({ id: "user-12345", username: "user-12345" })
     await ThreadsTableTestHelper.addThread({
       id: "thread-123",
       body: "thread biasa",
@@ -133,5 +133,26 @@ describe("CommentRepositoryPostgres", () => {
         )
       ).rejects.toThrow(NotFoundError)
     })
+  })
+  describe("getCommentsOnThread function", () => {
+    it("should comments on thread correctly", async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
+
+      const payload = {
+        id: "comment-12345",
+        content: "comment 1",
+        thread: "thread-123",
+        owner: "user-12345",
+      }
+      await CommentsTableTestHelper.addComment(payload)
+
+      const comments = await commentRepositoryPostgres.getCommentsOnThread(payload.thread)
+
+      expect(comments).toHaveLength(1)
+      expect(comments[0].id).toEqual(payload.id)
+      expect(comments[0].username).toEqual("user-12345")
+      expect(comments[0].content).toEqual(payload.content)
+      expect(comments[0].date).toBeDefined()
+    }) 
   })
 })
