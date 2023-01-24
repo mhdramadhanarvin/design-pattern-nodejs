@@ -13,7 +13,7 @@ class CommentRepository {
   async checkCommentExist(commentId) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED")
   }
-  async detailComment(comments) {
+  async getCommentsOnThread(threadId) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED")
   }
 }
