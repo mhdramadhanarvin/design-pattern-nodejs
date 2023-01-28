@@ -1,7 +1,10 @@
+/* eslint-disable no-undef */
 const pool = require("../../database/postgres/pool")
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper")
+const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper")
+const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper")
 const container = require("../../container")
-const createServer = require("../createServer")
+const createServer = require("../createServer") 
 
 describe("/threads endpoint", () => {
   afterAll(async () => {
@@ -9,7 +12,9 @@ describe("/threads endpoint", () => {
   })
 
   afterEach(async () => {
+    await CommentsTableTestHelper.cleanTable()
     await ThreadsTableTestHelper.cleanTable()
+    await UsersTableTestHelper.cleanTable()
   })
 
   describe("when POST /threads", () => {
@@ -201,6 +206,116 @@ describe("/threads endpoint", () => {
       expect(response.statusCode).toEqual(401) 
       expect(responseJson.error).toEqual("Unauthorized")
       expect(responseJson.message).toEqual("Missing authentication")
+    })
+  })
+  describe("when GET /threads/{threadId}", () => {
+
+    beforeEach(async () => {
+      // Arrange
+      threadPayload = {
+        title: "title dicoding",
+        body: "body dicoding", 
+      }
+
+      userPayload = {
+        username: "dicoding123",
+        password: "dicoding123",
+        fullname: "Dicoding Indonesia"
+      }
+
+      comment1Payload = {
+        content: "comment 1"
+      }
+      
+      comment2Payload = {
+        content: "comment 2"
+      }
+      
+      server = await createServer(container)
+
+      // Action
+      await server.inject({
+        method: "POST",
+        url: "/users",
+        payload: userPayload,
+      })
+
+      authentication = await server.inject({
+        method: "POST",
+        url: "/authentications",
+        payload: userPayload,
+      })
+
+      responseAuth = JSON.parse(authentication.payload)
+      
+      thread = await server.inject({
+        method: "POST",
+        url: "/threads",
+        payload: threadPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      threadId = JSON.parse(thread.payload).data.addedThread.id 
+
+      addComment1 = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments`,
+        payload: comment1Payload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      responseComment1 = JSON.parse(addComment1.payload)
+      comment1Id = responseComment1.data.addedComment.id 
+      
+      addComment2 = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments`,
+        payload: comment2Payload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      responseComment2 = JSON.parse(addComment2.payload)
+
+      deleteComment1 = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${comment1Id}`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+    })
+
+    it("should response 200 and persisted thread detail", async () => {
+      
+      const response = await server.inject({
+        method: "GET",
+        url: `/threads/${threadId}`,
+      })
+      
+      
+      // Assert
+      const responseJson = JSON.parse(response.payload)  
+      expect(response.statusCode).toEqual(200)
+      expect(responseJson.status).toEqual("success")  
+      expect(responseJson.data.thread.id).toEqual(threadId)
+      expect(responseJson.data.thread.title).toEqual(threadPayload.title)
+      expect(responseJson.data.thread.body).toEqual(threadPayload.body)
+      expect(responseJson.data.thread.username).toEqual(userPayload.username)
+      expect(Array.isArray(responseJson.data.thread.comments)).toBe(true)
+      expect(responseJson.data.thread.comments).toHaveLength(2)
+      expect(responseJson.data.thread.comments[0].content).toEqual("**komentar telah dihapus**")
+      expect(responseJson.data.thread.comments[1].content).toEqual(comment2Payload.content)
+    })
+
+    it("should response 404 when thread doesn't exist", async () => {
+      const response = await server.inject({
+        method: "GET",
+        url: "/threads/thread-123"
+      })      
+      
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("thread tidak ditemukan")
     })
   })
 })
