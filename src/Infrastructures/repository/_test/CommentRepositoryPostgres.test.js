@@ -155,4 +155,41 @@ describe("CommentRepositoryPostgres", () => {
       expect(comments[0].date).toBeDefined()
     }) 
   })
+  describe("addReplyComment function", () => {
+    it("should persist add comment and return comment correctly", async () => {
+
+      const fakeIdGenerator = () => "12345"
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      )
+
+      await CommentsTableTestHelper.addComment({  
+        id: "comment-123",
+        content: "comment biasa", 
+        thread: "thread-123",
+        owner: "user-12345"
+      })
+
+      const payloadAddReplyComment = {
+        owner: "user-12345",
+        thread: "thread-123",
+        comment: "comment-123",
+        content: "reply comment-123",
+      }
+
+      const addedComment = await commentRepositoryPostgres.addReplyComment(payloadAddReplyComment)
+
+      await CommentsTableTestHelper.findCommentsById(
+        "comment-123"
+      )
+      
+      expect(addedComment).toStrictEqual({
+        id: "replycomment-12345",
+        content: payloadAddReplyComment.content, 
+        owner: payloadAddReplyComment.owner,
+        comment: payloadAddReplyComment.comment  
+      })
+    })
+  })
 })
