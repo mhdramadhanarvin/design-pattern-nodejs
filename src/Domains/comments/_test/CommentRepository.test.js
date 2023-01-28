@@ -11,5 +11,6 @@ describe("CommentRepository interface", () => {
     await expect(commentRepository.verifyOwner({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
     await expect(commentRepository.checkCommentExist({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
     await expect(commentRepository.getCommentsOnThread({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
+    await expect(commentRepository.addReplyComment({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
   })
 })

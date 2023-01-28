@@ -16,6 +16,9 @@ class CommentRepository {
   async getCommentsOnThread(threadId) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED")
   }
+  async addReplyComment(threadId) {
+    throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED")
+  }
 }
 
 module.exports = CommentRepository
