@@ -76,13 +76,13 @@ class CommentRepositoryPostgres extends ThreadRepository {
     const id = `replycomment-${this._idGenerator()}` 
     
     const query = {
-      text: "INSERT INTO comments VALUES ($1, $2, $3, $4, $5) RETURNING id, content, owner, comment",      
+      text: "INSERT INTO comments VALUES ($1, $2, $3, $4, $5) RETURNING id, content, owner",      
       values: [id, content, thread, owner, comment]
     }
 
     const { rows } = await this._pool.query(query)
 
-    return rows[0]
+    return new AddedComment({ ...rows[0] })
   }
 }
 

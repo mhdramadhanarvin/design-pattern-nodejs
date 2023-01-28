@@ -184,12 +184,13 @@ describe("CommentRepositoryPostgres", () => {
         "comment-123"
       )
       
-      expect(addedComment).toStrictEqual({
-        id: "replycomment-12345",
-        content: payloadAddReplyComment.content, 
-        owner: payloadAddReplyComment.owner,
-        comment: payloadAddReplyComment.comment  
-      })
+      expect(addedComment).toStrictEqual(
+        new AddedComment({
+          id: "replycomment-12345",
+          content: payloadAddReplyComment.content, 
+          owner: payloadAddReplyComment.owner, 
+        })
+      )
     })
   })
 })
