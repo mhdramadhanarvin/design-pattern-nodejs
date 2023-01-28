@@ -16,6 +16,11 @@ exports.up = (pgm) => {
       type: "VARCHAR(50)",
       notNull: true,
     },
+    comment: {
+      type: "VARCHAR(50)",
+      defaultValue: null,
+      comment: "if value is null it's parent comment, if it contains it's a comment reply"
+    },
     created_at: {
       type: "TIMESTAMP",
       notNull: true,
