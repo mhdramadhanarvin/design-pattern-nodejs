@@ -1,4 +1,4 @@
-const AddComment = require("../../../Domains/comments/entities/AddComment")
+const AddReplyComment = require("../../../Domains/comments/entities/AddReplyComment")
 const AddedComment = require("../../../Domains/comments/entities/AddedComment")
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository")
 const CommentRepository = require("../../../Domains/comments/CommentRepository")
@@ -45,10 +45,11 @@ describe("AddReplyCommentUseCase", () => {
     expect(mockThreadRepository.checkThreadExist).toBeCalledWith(useCasePayload.thread)
     expect(mockCommentRepository.checkCommentExist).toBeCalledWith(useCasePayload.comment)
     expect(addedReplyComment).toStrictEqual(expectedAddedReplyComment) 
-    expect(mockCommentRepository.addReplyComment).toBeCalledWith(new AddComment({
+    expect(mockCommentRepository.addReplyComment).toBeCalledWith(new AddReplyComment({
       content: useCasePayload.content, 
       thread: useCasePayload.thread,
-      owner: useCasePayload.owner
+      owner: useCasePayload.owner,
+      comment: useCasePayload.comment
     }))
   })
 })
