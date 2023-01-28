@@ -63,7 +63,7 @@ class CommentRepositoryPostgres extends ThreadRepository {
 
   async getCommentsOnThread(threadId) {
     const query = {
-      text: "SELECT comments.id, comments.content, comments.created_at as date, users.username, comments.deleted_at FROM comments LEFT JOIN users ON comments.owner = users.id WHERE comments.thread = $1 ORDER BY date ASC",
+      text: "SELECT comments.id, comments.content, comments.created_at as date, users.username, comments.deleted_at, comments.comment FROM comments LEFT JOIN users ON comments.owner = users.id WHERE comments.thread = $1 ORDER BY date ASC",
       values: [threadId]
     }
 
@@ -76,13 +76,12 @@ class CommentRepositoryPostgres extends ThreadRepository {
     const id = `replycomment-${this._idGenerator()}` 
     
     const query = {
-      text: "INSERT INTO comments VALUES ($1, $2, $3, $4, $5) RETURNING id, content, owner",      
+      text: "INSERT INTO comments VALUES ($1, $2, $3, $4, $5) RETURNING id, content, owner, comment",      
       values: [id, content, thread, owner, comment]
     }
-
     const { rows } = await this._pool.query(query)
 
-    return new AddedComment({ ...rows[0] })
+    return rows[0]
   }
 }
 
