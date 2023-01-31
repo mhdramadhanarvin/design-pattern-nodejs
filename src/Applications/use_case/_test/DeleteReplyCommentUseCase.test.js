@@ -1,8 +1,8 @@
 const CommentRepository = require("../../../Domains/comments/CommentRepository")
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository")
-const DeleteCommentUseCase = require("../DeleteCommentUseCase")
+const DeleteReplyCommentUseCase = require("../DeleteReplyCommentUseCase")
 
-describe("DeleteCommentUseCase", () => {
+describe("DeleteReplyCommentUseCase", () => {
   /**
    * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
    */
@@ -11,6 +11,7 @@ describe("DeleteCommentUseCase", () => {
     const useCasePayload = {
       threadId: "thread-123", 
       commentId: "comment-123", 
+      replyCommentId: "replycomment-123", 
       owner: "user-123",
     }
 
@@ -22,18 +23,19 @@ describe("DeleteCommentUseCase", () => {
     mockCommentRepository.verifyOwner = jest.fn().mockImplementation(() => Promise.resolve())
     mockCommentRepository.deleteComment = jest.fn().mockImplementation(() => Promise.resolve())
 
-    const deleteCommentUseCase = new DeleteCommentUseCase({
+    const deleteReplyCommentUseCase = new DeleteReplyCommentUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository
     })
     
     // Action
-    await deleteCommentUseCase.execute(useCasePayload)
+    await deleteReplyCommentUseCase.execute(useCasePayload)
 
     // Assert
     expect(mockThreadRepository.checkThreadExist).toBeCalledWith(useCasePayload.threadId)
     expect(mockCommentRepository.checkCommentExist).toBeCalledWith(useCasePayload.commentId)
-    expect(mockCommentRepository.verifyOwner).toBeCalledWith(useCasePayload.commentId, useCasePayload.owner) 
-    expect(mockCommentRepository.deleteComment).toBeCalledWith(useCasePayload.commentId)
+    expect(mockCommentRepository.checkCommentExist).toBeCalledWith(useCasePayload.replyCommentId)
+    expect(mockCommentRepository.verifyOwner).toBeCalledWith(useCasePayload.replyCommentId, useCasePayload.owner) 
+    expect(mockCommentRepository.deleteComment).toBeCalledWith(useCasePayload.replyCommentId)
   })
 })

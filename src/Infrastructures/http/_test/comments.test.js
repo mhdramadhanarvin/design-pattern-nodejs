@@ -4,7 +4,7 @@ const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelp
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper")
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper")
 const container = require("../../container")
-const createServer = require("../createServer")
+const createServer = require("../createServer") 
 
 describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{commentId} endpoint", () => {
   afterAll(async () => {
@@ -238,7 +238,7 @@ describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{comment
       // Action
       const response = await server.inject({
         method: "DELETE",
-        url: "/threads/thread-123/comments/comment-123", 
+        url: `/threads/${threadId}/comments/comment-123`, 
         headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
       }) 
 
@@ -410,6 +410,144 @@ describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{comment
         url: `/threads/${threadId}/comments/${commentId}/replies`,
         payload: addReplyCommentPayload, 
       }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(401) 
+      expect(responseJson.error).toEqual("Unauthorized")
+      expect(responseJson.message).toEqual("Missing authentication")
+    })
+  })
+  describe("when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyCommentId}", () => {
+    beforeEach(async () => {
+      // Add comment before
+      addComment = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments`,
+        payload: {
+          content: "sebuah komentar"
+        },
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+      commentId = JSON.parse(addComment.payload).data.addedComment.id
+      
+      addReplyComment = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
+        payload: {
+          content: "sebuah balasan komentar"
+        },
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+      replyCommentId = JSON.parse(addReplyComment.payload).data.addedReply.id
+    })
+    it("should response 200", async () => {
+      
+      // delete the reply comment
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replyCommentId}`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(200)
+      expect(responseJson.status).toEqual("success") 
+    })
+
+    it("should response 403 when delete other people comment's", async () => {
+           
+      // Action
+      // add user2 and login 
+      const userPayload2 = {
+        username: "dicoding12345",
+        password: "dicoding12345",
+        fullname: "Dicoding Indonesia"
+      }  
+  
+      await server.inject({
+        method: "POST",
+        url: "/users",
+        payload: userPayload2,
+      }) 
+  
+      const authentication2 = await server.inject({
+        method: "POST",
+        url: "/authentications",
+        payload: userPayload2,
+      })
+  
+      responseAuth2 = JSON.parse(authentication2.payload)
+      
+      // delete reply comment as user 2
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replyCommentId}`, 
+        headers: { Authorization: `Bearer ${responseAuth2.data.accessToken}` }
+      })      
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(403)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("bukan pemilik komentar")
+    })
+
+    it("should response 404 when delete reply comment but thread doesn't exist", async () => {
+    
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/thread-abcd/comments/${commentId}/replies/${replyCommentId}`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("thread tidak ditemukan")
+    })  
+
+    it("should response 404 when delete reply comment but comment doesn't exist", async () => {
+    
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/comment-abcd/replies/${replyCommentId}`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("komentar tidak ditemukan")
+    })  
+
+    it("should response 404 when delete reply comment but reply comment doesn't exist", async () => {
+    
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${commentId}/replies/replycomment-abcd`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("komentar tidak ditemukan")
+    })  
+
+    it("should response 401 when no authentication", async () => {
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replyCommentId}`, 
+      })     
 
       // Assert
       const responseJson = JSON.parse(response.payload)

@@ -42,7 +42,7 @@ class DetailComment {
       })
       .map((reply) => ({
         id: reply.id,
-        content: reply.deleted_at ? "**komentar telah dihapus**" : reply.content,
+        content: reply.deleted_at ? "**balasan telah dihapus**" : reply.content,
         username: reply.username,
         date: reply.date
       }))
