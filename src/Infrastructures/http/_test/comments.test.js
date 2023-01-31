@@ -263,4 +263,159 @@ describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{comment
       expect(responseJson.message).toEqual("Missing authentication")
     })
   })
+  describe("when POST /threads/{threadId}/comments/{commentId}/replies", () => {
+    beforeEach(async () => {
+      // Arrange 
+      const addCommentPayload = {
+        content: "body dicoding", 
+      }  
+
+      // Action
+      addComment = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments`,
+        payload: addCommentPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      commentId = JSON.parse(addComment.payload).data.addedComment.id
+    })
+    it("should response 201 and persisted comment", async () => {
+      // Arrange
+      const addReplyCommentPayload = {
+        content: "reply comment "
+      }
+
+      // Action 
+      const responseReplyComment = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
+        payload: addReplyCommentPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      const responseDetailThread = await server.inject({
+        method: "GET",
+        url: `/threads/${threadId}`,
+      })
+      
+      // Assert
+      const responseJsonReplyComment = JSON.parse(responseReplyComment.payload) 
+      const responseJsonDetailThread = JSON.parse(responseDetailThread.payload)
+      
+      expect(responseReplyComment.statusCode).toEqual(201)
+      expect(responseJsonReplyComment.status).toEqual("success")
+      expect(responseDetailThread.statusCode).toEqual(200)
+      expect(responseJsonDetailThread.status).toEqual("success")
+      expect(responseJsonDetailThread.data.thread.id).toEqual(threadId) 
+      expect(responseJsonDetailThread.data.thread.comments).toHaveLength(1) 
+      expect(responseJsonDetailThread.data.thread.comments[0].id).toEqual(commentId) 
+      expect(responseJsonDetailThread.data.thread.comments[0].replies).toHaveLength[1] 
+      expect(responseJsonDetailThread.data.thread.comments[0].replies[0].id).toEqual(responseJsonReplyComment.data.addedReply.id) 
+    })
+
+    it("should response 400 when request payload not contain needed property", async () => {
+      // Arrange
+      const addReplyCommentPayload = {}
+
+      // Action 
+      const response = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
+        payload: addReplyCommentPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(400)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("tidak dapat membuat komentar baru karena properti yang dibutuhkan tidak ada")
+    })
+
+    it("should response 400 when request payload not meet data type specification", async () => {
+      // Arrange
+      const addReplyCommentPayload = {
+        content: {}
+      }
+
+      // Action 
+      const response = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
+        payload: addReplyCommentPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(400)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("tidak dapat membuat komentar baru karena tipe data tidak sesuai")
+    }) 
+    
+    it("should response 404 when request payload thread does not exist", async () => {
+      // Arrange
+      // Arrange
+      const addReplyCommentPayload = {
+        content: "reply comment "
+      }
+
+      // Action 
+      const response = await server.inject({
+        method: "POST",
+        url: `/threads/thread-abc/comments/${commentId}/replies`,
+        payload: addReplyCommentPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("thread tidak ditemukan")
+    }) 
+    
+    it("should response 404 when request payload comment does not exist", async () => {
+      // Arrange
+      // Arrange
+      const addReplyCommentPayload = {
+        content: "reply comment "
+      }
+
+      // Action 
+      const response = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments/comment-abc/replies`,
+        payload: addReplyCommentPayload,
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("komentar tidak ditemukan")
+    }) 
+
+    it("should response 401 when no authentication", async () => {
+      // Arrange
+      const addReplyCommentPayload = {
+        content: "reply comment "
+      }
+
+      // Action 
+      const response = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
+        payload: addReplyCommentPayload, 
+      }) 
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(401) 
+      expect(responseJson.error).toEqual("Unauthorized")
+      expect(responseJson.message).toEqual("Missing authentication")
+    })
+  })
 })

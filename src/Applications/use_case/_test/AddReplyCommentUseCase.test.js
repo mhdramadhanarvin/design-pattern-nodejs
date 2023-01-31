@@ -1,10 +1,10 @@
-const AddComment = require("../../../Domains/comments/entities/AddComment")
+const AddReplyComment = require("../../../Domains/comments/entities/AddReplyComment")
 const AddedComment = require("../../../Domains/comments/entities/AddedComment")
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository")
 const CommentRepository = require("../../../Domains/comments/CommentRepository")
-const AddCommentUseCase = require("../AddCommentUseCase")
+const AddReplyCommentUseCase = require("../AddReplyCommentUseCase")
 
-describe("AddCommentUseCase", () => {
+describe("AddReplyCommentUseCase", () => {
   /**
    * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
    */
@@ -14,9 +14,10 @@ describe("AddCommentUseCase", () => {
       content: "Dicoding Indonesia",
       thread: "thread-123",
       owner: "user-123",
+      comment: "comment-123"
     }
-    const expectedAddedComment = new AddedComment({
-      id: "comment-123",
+    const expectedAddedReplyComment = new AddedComment({
+      id: "replycomment-123",
       content: useCasePayload.content,
       owner: useCasePayload.owner,
     })
@@ -27,25 +28,28 @@ describe("AddCommentUseCase", () => {
 
     /** mocking needed function */  
     mockThreadRepository.checkThreadExist = jest.fn(() => Promise.resolve())
-    mockCommentRepository.addComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedComment))
+    mockCommentRepository.checkCommentExist = jest.fn(() => Promise.resolve())
+    mockCommentRepository.addReplyComment = jest.fn()
+      .mockImplementation(() => Promise.resolve(expectedAddedReplyComment))
 
     /** creating use case instance */
-    const getCommentUseCase = new AddCommentUseCase({
+    const getReplyCommentUseCase = new AddReplyCommentUseCase({
       commentRepository: mockCommentRepository,
       threadRepository: mockThreadRepository
     })
 
     // Action
-    const addedComment = await getCommentUseCase.execute(useCasePayload)
+    const addedReplyComment = await getReplyCommentUseCase.execute(useCasePayload)
 
     // Assert
     expect(mockThreadRepository.checkThreadExist).toBeCalledWith(useCasePayload.thread)
-    expect(addedComment).toStrictEqual(expectedAddedComment) 
-    expect(mockCommentRepository.addComment).toBeCalledWith(new AddComment({
+    expect(mockCommentRepository.checkCommentExist).toBeCalledWith(useCasePayload.comment)
+    expect(addedReplyComment).toStrictEqual(expectedAddedReplyComment) 
+    expect(mockCommentRepository.addReplyComment).toBeCalledWith(new AddReplyComment({
       content: useCasePayload.content, 
       thread: useCasePayload.thread,
-      owner: useCasePayload.owner
+      owner: useCasePayload.owner,
+      comment: useCasePayload.comment
     }))
   })
 })
