@@ -238,7 +238,7 @@ describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{comment
       // Action
       const response = await server.inject({
         method: "DELETE",
-        url: "/threads/thread-123/comments/comment-123", 
+        url: `/threads/${threadId}/comments/comment-123`, 
         headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
       }) 
 
