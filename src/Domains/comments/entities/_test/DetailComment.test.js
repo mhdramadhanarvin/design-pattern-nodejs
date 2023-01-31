@@ -27,7 +27,8 @@ describe("a DetailComment entities", () => {
           id: "comment-1",
           content: "comment 1",
           username: "user1",
-          date: "2023-01-23 16:41:20.532"
+          date: "2023-01-23 16:41:20.532",
+          replies: []
         }
       ]
     }
@@ -69,12 +70,14 @@ describe("a DetailComment entities", () => {
         content: "**komentar telah dihapus**",
         username: "user1",
         date: "2023-01-23 16:41:20.532", 
+        replies: []
       },
       {
         id: "comment-2",
         content: "comment 2",
         username: "user1",
         date: "2023-01-23 16:41:20.532", 
+        replies: []
       },
     ]
     expect(comments).toEqual(expectedReturn) 

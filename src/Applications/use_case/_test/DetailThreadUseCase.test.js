@@ -68,12 +68,14 @@ describe("DetailThreadUseCase", () => {
             content: "**komentar telah dihapus**",
             username: expectedComments[0].username,
             date: expectedComments[0].date,
+            replies: []
           },
           {
             id: expectedComments[1].id,
             content: expectedComments[1].content,
             username: expectedComments[1].username,
             date: expectedComments[1].date,
+            replies: []
           },
         ]
       }
