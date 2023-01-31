@@ -10,8 +10,8 @@ class DeleteReplyCommentUseCase {
     await this._threadRepository.checkThreadExist(threadId)
     await this._commentRepository.checkCommentExist(commentId)
     await this._commentRepository.checkCommentExist(replyCommentId)
-    await this._commentRepository.verifyOwner(commentId, owner)
-    await this._commentRepository.deleteComment(commentId)
+    await this._commentRepository.verifyOwner(replyCommentId, owner)
+    await this._commentRepository.deleteComment(replyCommentId)
   }
 }
 
