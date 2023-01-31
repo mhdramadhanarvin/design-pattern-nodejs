@@ -287,17 +287,31 @@ describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{comment
       }
 
       // Action 
-      const response = await server.inject({
+      const responseReplyComment = await server.inject({
         method: "POST",
         url: `/threads/${threadId}/comments/${commentId}/replies`,
         payload: addReplyCommentPayload,
         headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
       }) 
 
+      const responseDetailThread = await server.inject({
+        method: "GET",
+        url: `/threads/${threadId}`,
+      })
+      
       // Assert
-      const responseJson = JSON.parse(response.payload) 
-      expect(response.statusCode).toEqual(201)
-      expect(responseJson.status).toEqual("success")
+      const responseJsonReplyComment = JSON.parse(responseReplyComment.payload) 
+      const responseJsonDetailThread = JSON.parse(responseDetailThread.payload)
+      
+      expect(responseReplyComment.statusCode).toEqual(201)
+      expect(responseJsonReplyComment.status).toEqual("success")
+      expect(responseDetailThread.statusCode).toEqual(200)
+      expect(responseJsonDetailThread.status).toEqual("success")
+      expect(responseJsonDetailThread.data.thread.id).toEqual(threadId) 
+      expect(responseJsonDetailThread.data.thread.comments).toHaveLength(1) 
+      expect(responseJsonDetailThread.data.thread.comments[0].id).toEqual(commentId) 
+      expect(responseJsonDetailThread.data.thread.comments[0].replies).toHaveLength[1] 
+      expect(responseJsonDetailThread.data.thread.comments[0].replies[0].id).toEqual(responseJsonReplyComment.data.addedReply.id) 
     })
 
     it("should response 400 when request payload not contain needed property", async () => {
