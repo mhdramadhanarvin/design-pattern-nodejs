@@ -83,6 +83,24 @@ class CommentRepositoryPostgres extends ThreadRepository {
 
     return rows[0]
   }
+
+  async incrementCommentLike(commentId) {
+    const query = {
+      text: "UPDATE comments SET likes = likes + 1 WHERE id = $1",
+      values: [commentId]
+    }
+
+    await this._pool.query(query)
+  }
+
+  async decrementCommentLike(commentId) {
+    const query = {
+      text: "UPDATE comments SET likes = likes - 1 WHERE id = $1",
+      values: [commentId]
+    }
+
+    await this._pool.query(query)
+  }
 }
 
 module.exports = CommentRepositoryPostgres
