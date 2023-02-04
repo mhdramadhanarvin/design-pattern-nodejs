@@ -12,10 +12,12 @@ const pool = require("./database/postgres/pool")
 const UserRepository = require("../Domains/users/UserRepository")
 const ThreadRepository = require("../Domains/threads/ThreadRepository")
 const CommentRepository = require("../Domains/comments/CommentRepository")
+const LikesCommentRepository = require("../Domains/likes_comment/LikesCommentRepository")
 const PasswordHash = require("../Applications/security/PasswordHash")
 const UserRepositoryPostgres = require("./repository/UserRepositoryPostgres")
 const ThreadRepositoryPostgres = require("./repository/ThreadRepositoryPostgres")
 const CommentRepositoryPostgres = require("./repository/CommentRepositoryPostgres")
+const LikesCommentRepositoryPostgres = require("./repository/LikesCommentRepositoryPostgres")
 const BcryptPasswordHash = require("./security/BcryptPasswordHash")
 
 // use case
@@ -103,6 +105,20 @@ container.register([
   {
     key: CommentRepository.name,
     Class: CommentRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: LikesCommentRepository.name,
+    Class: LikesCommentRepositoryPostgres,
     parameter: {
       dependencies: [
         {
