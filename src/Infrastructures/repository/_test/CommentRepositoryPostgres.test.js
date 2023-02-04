@@ -220,7 +220,7 @@ describe("CommentRepositoryPostgres", () => {
       expect(comment[0].likes).toEqual(payload.likes + 1)
     })
   })
-  describe("devcrementCommentLike function", () => {
+  describe("decrementCommentLike function", () => {
     it("should persist decrement like comment correctly", async () => {
 
       const fakeIdGenerator = () => "12345"

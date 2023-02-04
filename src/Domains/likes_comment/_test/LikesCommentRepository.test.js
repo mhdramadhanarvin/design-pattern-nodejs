@@ -6,6 +6,7 @@ describe("LikesCommentRepository interface", () => {
     const likesCommentRepository = new LikesCommentRepository()
 
     // Action and Assert
+    await expect(likesCommentRepository.hasLikeComment({})).rejects.toThrowError("LIKES_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
     await expect(likesCommentRepository.addUserComment({})).rejects.toThrowError("LIKES_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
     await expect(likesCommentRepository.removeUserComment({})).rejects.toThrowError("LIKES_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
   })
