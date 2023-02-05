@@ -556,4 +556,101 @@ describe("/threads/{threadId}/comments and /threads/{threadId}/comments/{comment
       expect(responseJson.message).toEqual("Missing authentication")
     })
   })
+  describe("when PUT /threads/{threadId}/comments/{commentId}/likes", () => {
+    beforeEach(async () => {
+      // Add comment before
+      addComment = await server.inject({
+        method: "POST",
+        url: `/threads/${threadId}/comments`,
+        payload: {
+          content: "sebuah komentar"
+        },
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      }) 
+      commentId = JSON.parse(addComment.payload).data.addedComment.id 
+    })
+    
+    it("should response 200 for like comment", async () => {
+      
+      // like the comment
+      const response = await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/${commentId}/likes`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(200)
+      expect(responseJson.status).toEqual("success") 
+    })
+    
+    it("should response 200 for unlike comment", async () => {
+      
+      // like the comment first 
+      await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/${commentId}/likes`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+      
+      // unlike the comment 
+      const response = await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/${commentId}/likes`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(200)
+      expect(responseJson.status).toEqual("success") 
+    }) 
+
+    it("should response 404 when like comment but thread doesn't exist", async () => {
+    
+      // Action
+      const response = await server.inject({
+        method: "PUT",
+        url: `/threads/thread-abc/comments/${commentId}/likes`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("thread tidak ditemukan")
+    })  
+
+    it("should response 404 when like comment but comment doesn't exist", async () => {
+    
+      // Action
+      const response = await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/comment-abc/likes`, 
+        headers: { Authorization: `Bearer ${responseAuth.data.accessToken}` }
+      })
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(404)
+      expect(responseJson.status).toEqual("fail")
+      expect(responseJson.message).toEqual("komentar tidak ditemukan")
+    })   
+
+    it("should response 401 when no authentication", async () => {
+      // Action
+      const response = await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/${commentId}/likes`,  
+      })
+
+      // Assert
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(401) 
+      expect(responseJson.error).toEqual("Unauthorized")
+      expect(responseJson.message).toEqual("Missing authentication")
+    })
+  })
 })
