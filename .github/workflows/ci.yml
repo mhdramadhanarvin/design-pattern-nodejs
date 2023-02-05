@@ -9,6 +9,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD }}
+          POSTGRES_DB: ${{ secrets.PGDATABASE }}
+        ports:
+          - 5432:5432
+
     strategy:
       matrix:
         node-version: [16.19.0]
