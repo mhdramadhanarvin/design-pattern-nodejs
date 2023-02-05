@@ -22,7 +22,6 @@ jobs:
           user: ${{ secrets.SSH_USER}}
           key: ${{ secrets.SSH_KEY}}
           scp: |
-            './' => /var/www/apps
-          last_ssh: |
-            pwd
-            ls -la
+            './' => /var/www/apps/
+          last_ssh: | 
+            ls -la /var/www/apps/
