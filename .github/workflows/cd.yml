@@ -22,6 +22,8 @@ jobs:
           user: ${{ secrets.SSH_USER}}
           key: ${{ secrets.SSH_KEY}}
           scp: |
-            './' => /var/www/apps/
+            './test/*' => $PATH_DEST
           last_ssh: | 
-            ls -la /var/www/apps/
+            ls -la $PATH_DEST
+        env:
+          PATH_DEST: "/home/ubuntu/"
