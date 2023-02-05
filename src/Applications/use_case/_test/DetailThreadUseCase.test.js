@@ -25,12 +25,14 @@ describe("DetailThreadUseCase", () => {
         username: "user-123",
         date: "2021-08-08T07:22:33.555Z",
         deleted_at: "2021-08-08T07:23:33.555Z",
+        likes: 0
       },
       {
         id: "comment-12345",
         content: "comment-2",
         username: "user-123",
-        date: "2021-08-08T07:25:33.555Z"
+        date: "2021-08-08T07:25:33.555Z",
+        likes: 0
       }
     ]
 
@@ -68,6 +70,7 @@ describe("DetailThreadUseCase", () => {
             content: "**komentar telah dihapus**",
             username: expectedComments[0].username,
             date: expectedComments[0].date,
+            likeCount: 0,
             replies: []
           },
           {
@@ -75,6 +78,7 @@ describe("DetailThreadUseCase", () => {
             content: expectedComments[1].content,
             username: expectedComments[1].username,
             date: expectedComments[1].date,
+            likeCount: 0,
             replies: []
           },
         ]

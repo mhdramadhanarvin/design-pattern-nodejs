@@ -28,6 +28,7 @@ class DetailComment {
           content: comment.deleted_at ? "**komentar telah dihapus**" : comment.content,
           username: comment.username,
           date: comment.date,
+          likeCount: comment.likes,
           replies: [...replies]
         }
       })
@@ -44,7 +45,8 @@ class DetailComment {
         id: reply.id,
         content: reply.deleted_at ? "**balasan telah dihapus**" : reply.content,
         username: reply.username,
-        date: reply.date
+        date: reply.date,
+        likeCount: reply.likes,
       }))
     
     return result
