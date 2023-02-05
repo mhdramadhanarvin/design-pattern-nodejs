@@ -13,9 +13,9 @@ class LikesCommentRepositoryPostgres extends LikesCommentRepository {
       values: [comment, owner]
     }
 
-    const { rows } = await this._pool.query(query)
+    const { rowCount } = await this._pool.query(query)
 
-    if (rows.length === 1) return true
+    if (rowCount === 1) return true
     return false
   } 
 
