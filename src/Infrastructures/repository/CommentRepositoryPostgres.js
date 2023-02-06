@@ -63,7 +63,7 @@ class CommentRepositoryPostgres extends ThreadRepository {
 
   async getCommentsOnThread(threadId) {
     const query = {
-      text: "SELECT comments.id, comments.content, comments.created_at as date, users.username, comments.deleted_at, comments.comment FROM comments LEFT JOIN users ON comments.owner = users.id WHERE comments.thread = $1 ORDER BY date ASC",
+      text: "SELECT comments.id, comments.content, comments.created_at as date, users.username, comments.deleted_at, comments.comment, comments.likes FROM comments LEFT JOIN users ON comments.owner = users.id WHERE comments.thread = $1 ORDER BY date ASC",
       values: [threadId]
     }
 
@@ -82,6 +82,24 @@ class CommentRepositoryPostgres extends ThreadRepository {
     const { rows } = await this._pool.query(query)
 
     return rows[0]
+  }
+
+  async incrementCommentLike(commentId) {
+    const query = {
+      text: "UPDATE comments SET likes = likes + 1 WHERE id = $1",
+      values: [commentId]
+    }
+
+    await this._pool.query(query)
+  }
+
+  async decrementCommentLike(commentId) {
+    const query = {
+      text: "UPDATE comments SET likes = likes - 1 WHERE id = $1",
+      values: [commentId]
+    }
+
+    await this._pool.query(query)
   }
 }
 

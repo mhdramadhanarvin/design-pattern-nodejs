@@ -1,7 +1,8 @@
-const AddCommentUseCase = require("../../../../Applications/use_case/AddCommentUseCase.js")
-const AddReplyCommentUseCase = require("../../../../Applications/use_case/AddReplyCommentUseCase.js")
-const DeleteCommentUseCase = require("../../../../Applications/use_case/DeleteCommentUseCase.js")
-const DeleteReplyCommentUseCase = require("../../../../Applications/use_case/DeleteReplyCommentUseCase.js")
+const AddCommentUseCase = require("../../../../Applications/use_case/AddCommentUseCase")
+const AddReplyCommentUseCase = require("../../../../Applications/use_case/AddReplyCommentUseCase")
+const DeleteCommentUseCase = require("../../../../Applications/use_case/DeleteCommentUseCase")
+const DeleteReplyCommentUseCase = require("../../../../Applications/use_case/DeleteReplyCommentUseCase")
+const LikeUnlikeCommentUseCase = require("../../../../Applications/use_case/LikeUnlikeCommentUseCase")
  
 class CommentsHandler {
   constructor(container) {
@@ -11,6 +12,7 @@ class CommentsHandler {
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this)
     this.postReplyCommentHandler = this.postReplyCommentHandler.bind(this)
     this.deleteReplyCommentHandler = this.deleteReplyCommentHandler.bind(this)
+    this.putLikeUnlikeCommentHandler = this.putLikeUnlikeCommentHandler.bind(this)
   }
  
   async postCommentHandler(request, h) { 
@@ -84,6 +86,23 @@ class CommentsHandler {
     }
     await deleteReplyCommentUseCase.execute(useCasePayload)
     
+    return {
+      status: "success",
+    }
+  }
+
+  async putLikeUnlikeCommentHandler(request) {
+    const likeUnlikeCommentUseCase = this._container.getInstance(LikeUnlikeCommentUseCase.name)
+    const { threadId, commentId } = request.params
+    const { id: userId } = request.auth.credentials
+
+    const useCasePayload = {
+      threadId, 
+      commentId,
+      userId
+    }
+    await likeUnlikeCommentUseCase.execute(useCasePayload)
+
     return {
       status: "success",
     }

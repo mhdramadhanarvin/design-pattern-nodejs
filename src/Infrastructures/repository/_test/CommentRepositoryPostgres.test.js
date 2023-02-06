@@ -192,4 +192,60 @@ describe("CommentRepositoryPostgres", () => {
       })
     })
   })
+  describe("incrementCommentLike function", () => {
+    it("should persist increment like comment correctly", async () => {
+
+      const fakeIdGenerator = () => "12345"
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      )
+
+      const payload = {  
+        id: "comment-123",
+        content: "comment biasa", 
+        thread: "thread-123",
+        owner: "user-12345",
+        likes: 1
+      }
+  
+      await CommentsTableTestHelper.addComment(payload)
+
+      await commentRepositoryPostgres.incrementCommentLike("comment-123")
+
+      const comment = await CommentsTableTestHelper.findCommentsById(
+        "comment-123"
+      )
+      
+      expect(comment[0].likes).toEqual(payload.likes + 1)
+    })
+  })
+  describe("decrementCommentLike function", () => {
+    it("should persist decrement like comment correctly", async () => {
+
+      const fakeIdGenerator = () => "12345"
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      )
+
+      const payload = {  
+        id: "comment-123",
+        content: "comment biasa", 
+        thread: "thread-123",
+        owner: "user-12345",
+        likes: 1
+      }
+  
+      await CommentsTableTestHelper.addComment(payload)
+
+      await commentRepositoryPostgres.decrementCommentLike("comment-123")
+
+      const comment = await CommentsTableTestHelper.findCommentsById(
+        "comment-123"
+      )
+      
+      expect(comment[0].likes).toEqual(payload.likes - 1)
+    })
+  })
 })

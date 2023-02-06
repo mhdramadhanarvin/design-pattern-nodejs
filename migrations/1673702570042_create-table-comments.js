@@ -21,6 +21,11 @@ exports.up = (pgm) => {
       defaultValue: null,
       comment: "if value is null it's parent comment, if it contains it's a comment reply"
     },
+    likes: {
+      type: "integer",
+      noNull: true,
+      default: 0
+    },
     created_at: {
       type: "TIMESTAMP",
       notNull: true,

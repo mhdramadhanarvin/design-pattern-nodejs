@@ -12,5 +12,7 @@ describe("CommentRepository interface", () => {
     await expect(commentRepository.checkCommentExist({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
     await expect(commentRepository.getCommentsOnThread({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
     await expect(commentRepository.addReplyComment({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
+    await expect(commentRepository.incrementCommentLike({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
+    await expect(commentRepository.decrementCommentLike({})).rejects.toThrowError("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED") 
   })
 })
