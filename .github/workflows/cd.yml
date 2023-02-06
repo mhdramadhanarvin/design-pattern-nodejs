@@ -23,8 +23,7 @@ jobs:
           REMOTE_USER: ${{ secrets.SSH_USER}}
           REMOTE_PORT: 22 
           SOURCE: ./  
-          TARGET: /var/www/apps/ 
-          ARGS: -az --delete
+          TARGET: /var/www/apps/  
           SCRIPT_AFTER: |
             cd /var/www/apps/
             npm install
