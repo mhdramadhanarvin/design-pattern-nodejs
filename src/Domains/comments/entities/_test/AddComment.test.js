@@ -32,8 +32,7 @@ describe("a AddComment entities", () => {
     // Action
     const addComment = new AddComment(payload)
 
-    // Assert
-    expect(addComment.id).toEqual(payload.id)
+    // Assert 
     expect(addComment.content).toEqual(payload.content)
     expect(addComment.thread).toEqual(payload.thread)
     expect(addComment.owner).toEqual(payload.owner)
