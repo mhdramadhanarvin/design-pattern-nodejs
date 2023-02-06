@@ -31,11 +31,11 @@ jobs:
           # Remote port
           REMOTE_PORT: 22 # optional, default is 22
           # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
-          SOURCE: ./ # optional, default is 
+          # SOURCE: ./ # optional, default is 
           # Target directory
           TARGET: /var/www/apps/ # optional, default is /home/REMOTE_USER/
           # Arguments to pass to rsync
-          # ARGS: # optional, default is -rlgoDzvc -i
+          ARGS: -a # optional, default is -rlgoDzvc -i
           # An array of ssh arguments, they must be prefixed with -o and separated by a comma, for example: -o SomeArgument=no, -o SomeOtherArgument=5 
           # SSH_CMD_ARGS: # optional, default is -o StrictHostKeyChecking=no
           # paths to exclude separated by `,`, ie: `/dist/, /node_modules/`
