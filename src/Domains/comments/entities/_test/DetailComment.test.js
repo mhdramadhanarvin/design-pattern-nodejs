@@ -49,13 +49,24 @@ describe("a DetailComment entities", () => {
           content: "comment 1",
           username: "user1",
           date: "2023-01-23 16:41:20.532",
+          likes: 0,
           deleted_at: "2023-01-25 16:41:20.532"
         },
         {
           id: "comment-2",
           content: "comment 2",
           username: "user1",
+          likes: 0,
           date: "2023-01-23 16:41:20.532", 
+        },
+        {
+          id: "replycomment-1",
+          content: "comment 1",
+          username: "user1",
+          date: "2023-01-23 16:41:20.532",
+          comment: "comment-1",
+          likes: 0,
+          deleted_at: "2023-01-25 16:41:20.532"
         },
       ]
     }
@@ -70,13 +81,23 @@ describe("a DetailComment entities", () => {
         content: "**komentar telah dihapus**",
         username: "user1",
         date: "2023-01-23 16:41:20.532", 
-        replies: []
+        likeCount: 0,
+        replies: [
+          {
+            id: "replycomment-1",
+            content: "**balasan telah dihapus**",
+            username: "user1",
+            date: "2023-01-23 16:41:20.532", 
+            likeCount: 0,
+          }
+        ]
       },
       {
         id: "comment-2",
         content: "comment 2",
         username: "user1",
         date: "2023-01-23 16:41:20.532", 
+        likeCount: 0,
         replies: []
       },
     ]
