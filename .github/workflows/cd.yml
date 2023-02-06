@@ -18,25 +18,12 @@ jobs:
       - name: Push code to EC2
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
-          # Private key part of an SSH key pair
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY}}
-          # Remote host
           REMOTE_HOST: ${{ secrets.SSH_HOST}}
-          # Remote user
           REMOTE_USER: ${{ secrets.SSH_USER}}
-          # Remote port
-          REMOTE_PORT: 22 # optional, default is 22
-          # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
-          SOURCE: ./ # optional, default is 
-          # Target directory
-          TARGET: /var/www/apps/ # optional, default is /home/REMOTE_USER/
-          # Arguments to pass to rsync
-          # ARGS: -a # optional, default is -rlgoDzvc -i
-          # An array of ssh arguments, they must be prefixed with -o and separated by a comma, for example: -o SomeArgument=no, -o SomeOtherArgument=5 
-          # SSH_CMD_ARGS: # optional, default is -o StrictHostKeyChecking=no
-          # paths to exclude separated by `,`, ie: `/dist/, /node_modules/`
-          # EXCLUDE: # optional, default is 
-          # Script to run on host machine before rsync
-          # SCRIPT_BEFORE: ls -la $GITHUB_WORKSPACE # optional, default is 
-          # Script to run on host machine after rsync
-          # SCRIPT_AFTER: ls -la  # optional, default is 
+          REMOTE_PORT: 22 
+          SOURCE: ./  
+          TARGET: /var/www/apps/ 
+          ARGS: -az --delete
+          SCRIPT_AFTER: |
+            ls -la /var/www/apps/
