@@ -26,4 +26,6 @@ jobs:
           TARGET: /var/www/apps/ 
           ARGS: -az --delete
           SCRIPT_AFTER: |
-            ls -la /var/www/apps/
+            cd /var/www/apps/
+            npm install
+            npm run migrate up
